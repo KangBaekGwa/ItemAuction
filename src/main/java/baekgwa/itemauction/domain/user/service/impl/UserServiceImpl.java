@@ -1,11 +1,13 @@
 package baekgwa.itemauction.domain.user.service.impl;
 
-import baekgwa.itemauction.domain.user.dto.UserPrifileDataDto;
+import baekgwa.itemauction.domain.user.dto.UserProfileDataDto;
 import baekgwa.itemauction.domain.userprofile.entity.UserProfile;
 import baekgwa.itemauction.domain.userprofile.repository.UserProfileRepository;
 import baekgwa.itemauction.domain.user.entity.User;
 import baekgwa.itemauction.domain.user.repository.UserRepository;
 import baekgwa.itemauction.domain.user.service.UserService;
+import baekgwa.itemauction.global.exception.CustomErrorCode;
+import baekgwa.itemauction.global.exception.CustomException;
 import baekgwa.itemauction.web.user.UserForm.NewUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,42 +27,56 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public void addNewUser(NewUser newUser) {
-        if (Boolean.TRUE.equals(duplicateCheckByLoginId(newUser.getLoginId()))) {
-//            throw new CustomException(BaseResponse.DuplicatedLoginId);
-            log.info("로그인 아이디가 중복되었습니다.");
-            return;
-        }
 
-        User createdNewUser =
-                User.createNewUser(
-                        newUser.getLoginId(), bCryptPasswordEncoder.encode(newUser.getPassword()));
-        UserProfile createdNewUserProfile =
-                UserProfile.createNewUserProfile(
-                        createdNewUser, newUser.getName(), newUser.getNickName(), newUser.getEmail(), newUser.getPhone());
+        addNewUserDuplicateCheck(newUser);
 
-        userRepository.save(createdNewUser);
+        User createdNewUser = User.createNewUser(newUser.getLoginId(), encodePassword(newUser.getPassword()));
+        User savedUserData = userRepository.save(createdNewUser);
+
+        UserProfile createdNewUserProfile = UserProfile.createNewUserProfile(savedUserData, newUser.getName(), newUser.getNickName(), newUser.getEmail(), newUser.getPhone());
         userProfileRepository.save(createdNewUserProfile);
     }
 
     @Transactional
     @Override
-    public UserPrifileDataDto findUserData(String loginId) {
-        User findData = userRepository.findByLoginId(loginId);
-        UserProfile findUserProfile = userProfileRepository.findById(findData.getId()).orElseThrow(
-                () -> new RuntimeException("로그인한 회원의 프로파일이 없음.")
+    public UserProfileDataDto findUserData(Long userId) {
+        UserProfile findUserProfile = userProfileRepository.findById(userId).orElseThrow(
+                () -> new CustomException(CustomErrorCode.FIND_USER_PROFILE_ERROR_NOT_FIND)
         );
         return convertToDto(findUserProfile);
     }
 
-    private boolean duplicateCheckByLoginId(String loginId) {
-        return userRepository.existsByLoginId(loginId);
-    }
-
-    private UserPrifileDataDto convertToDto(UserProfile userProfile) {
-        return UserPrifileDataDto
+    private UserProfileDataDto convertToDto(UserProfile userProfile) {
+        return UserProfileDataDto
                 .builder()
                 .nickName(userProfile.getNickName())
                 .name(userProfile.getName())
                 .build();
+    }
+
+    private String encodePassword(String password) {
+        return bCryptPasswordEncoder.encode(password);
+    }
+
+    private void addNewUserDuplicateCheck(NewUser newUser) {
+        if(Boolean.TRUE.equals(userRepository.existsByLoginId(newUser.getLoginId()))){
+            throw new CustomException(CustomErrorCode.ADD_USER_ERROR_DUPLICATED_LOGIN_ID);
+        }
+
+        userProfileRepository.findAllByUniqueValues(newUser.getNickName(), newUser.getEmail(), newUser.getPhone()).ifPresent(
+                findData -> {
+                    if (findData.getEmail().equals(newUser.getEmail())) {
+                        throw new CustomException(CustomErrorCode.ADD_USER_ERROR_DUPLICATED_EMAIL);
+                    }
+
+                    if (findData.getPhone().equals(newUser.getPhone())) {
+                        throw new CustomException(CustomErrorCode.ADD_USER_ERROR_DUPLICATED_PHONE);
+                    }
+
+                    if (findData.getNickName().equals(newUser.getNickName())) {
+                        throw new CustomException(CustomErrorCode.ADD_USER_ERROR_DUPLICATED_NICKNAME);
+                    }
+                }
+        );
     }
 }

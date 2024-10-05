@@ -4,8 +4,6 @@ import baekgwa.itemauction.domain.user.entity.User;
 import baekgwa.itemauction.domain.user.repository.UserRepository;
 import baekgwa.itemauction.domain.userprofile.entity.UserProfile;
 import baekgwa.itemauction.domain.userprofile.repository.UserProfileRepository;
-import jakarta.annotation.PostConstruct;
-import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Profile;
@@ -29,7 +27,7 @@ public class TestUserInit {
     @Transactional
     @EventListener(ApplicationReadyEvent.class)
     public void init() {
-        User newUser = User.createNewUser("test1", bCryptPasswordEncoder.encode("1234"));
+        User newUser = User.createNewAdmin("test1", bCryptPasswordEncoder.encode("1234"));
         User savedData = userRepository.save(newUser);
 
         UserProfile newUserProfile = UserProfile.createNewUserProfile(savedData, "유저A", "백과",

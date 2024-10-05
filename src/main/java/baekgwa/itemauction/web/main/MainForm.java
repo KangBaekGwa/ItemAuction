@@ -1,16 +1,16 @@
 package baekgwa.itemauction.web.main;
 
-import baekgwa.itemauction.domain.user.dto.UserPrifileDataDto;
+import baekgwa.itemauction.domain.user.dto.UserProfileDataDto;
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 public class MainForm {
 
-    private final UserPrifileDataDto userPrifileDataDto;
+    private final UserProfileDataDto userProfileDataDto;
 
     @Builder
-    private MainForm(UserPrifileDataDto userPrifileDataDto) {
-        this.userPrifileDataDto = userPrifileDataDto;
+    private MainForm(UserProfileDataDto userProfileDataDto) {
+        this.userProfileDataDto = userProfileDataDto;
     }
 }

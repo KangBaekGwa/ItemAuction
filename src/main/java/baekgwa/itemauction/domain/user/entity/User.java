@@ -57,8 +57,27 @@ public class User extends BaseEntity {
                 .loginId(loginId)
                 .password(password)
                 .uuid(UUID.randomUUID().toString())
+                .role(UserRole.NONE)
+                .status(UserStatus.ACTIVE)
+                .build();
+    }
+
+    public static User createNewAdmin(String loginId, String password) {
+        return User
+                .builder()
+                .loginId(loginId)
+                .password(password)
+                .uuid(UUID.randomUUID().toString())
                 .role(UserRole.ADMIN)
                 .status(UserStatus.ACTIVE)
                 .build();
+    }
+
+    public void updateRole(UserRole role) {
+        this.role = role;
+    }
+
+    public void updateStatus(UserStatus status) {
+        this.status = status;
     }
 }

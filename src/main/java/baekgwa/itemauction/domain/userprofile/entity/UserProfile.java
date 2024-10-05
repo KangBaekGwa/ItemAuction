@@ -3,6 +3,7 @@ package baekgwa.itemauction.domain.userprofile.entity;
 import baekgwa.itemauction.domain.BaseEntity;
 import baekgwa.itemauction.domain.user.entity.User;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -27,15 +28,20 @@ public class UserProfile extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @Column(nullable = false)
     private String name;
 
+    @Column(nullable = false, unique = true)
     private String nickName;
 
+    @Column(nullable = false, unique = true)
     private String email;
 
+    @Column(nullable = false, unique = true)
     private String phone;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private UserGrade grade;
 
     @Builder
@@ -59,5 +65,9 @@ public class UserProfile extends BaseEntity {
                 .phone(phone)
                 .grade(UserGrade.BRONZE)
                 .build();
+    }
+
+    public void updateGrade(UserGrade grade) {
+        this.grade = grade;
     }
 }
