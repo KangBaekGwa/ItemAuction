@@ -23,8 +23,7 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/login", "users/add", "/error/**", "/loginProc",
-                                "/css/*").permitAll()
+                        .requestMatchers("/", "/login", "/users/add", "/error/**", "/loginProc", "/css/*").permitAll()
                         .requestMatchers("/admin").hasRole(UserRole.ADMIN.getText())
                         .requestMatchers("/my/**").hasAnyRole(UserRole.ADMIN.getText(), "USER")
                         .anyRequest().authenticated());
@@ -51,7 +50,8 @@ public class SecurityConfig {
         http
                 .logout(auth -> auth
                         .logoutUrl("/logout")
-                        .logoutSuccessUrl("/"));
+                        .logoutSuccessUrl("/")
+                        .invalidateHttpSession(true));
 
         return http.build();
     }

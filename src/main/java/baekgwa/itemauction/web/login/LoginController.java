@@ -16,10 +16,10 @@ public class LoginController {
         return "login/loginForm";
     }
 
-    @GetMapping("/login/aram")
-    public String loginAram(Authentication authentication, RedirectAttributes redirectAttributes) {
-        log.info("알람전송");
-
-        return "redirect:/";
-    }
+//    @GetMapping("/login/aram")
+//    public String loginAram(Authentication authentication, RedirectAttributes redirectAttributes) {
+//        log.info("알람전송");
+//
+//        return "redirect:/";
+//    }
 }

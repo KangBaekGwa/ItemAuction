@@ -19,7 +19,7 @@ public class MainController {
     private final UserService userService;
 
     @GetMapping("/")
-    public String mainPage(Model model) {
+    public String mainPageForm(Model model) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 

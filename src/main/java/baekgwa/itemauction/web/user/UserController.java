@@ -19,7 +19,7 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/add")
-    public String addNewUser(@ModelAttribute("newMemberForm") NewUser newUser) {
+    public String addNewUserForm(@ModelAttribute("newMemberForm") NewUser newUser) {
 
         return "/user/addUserForm";
     }
