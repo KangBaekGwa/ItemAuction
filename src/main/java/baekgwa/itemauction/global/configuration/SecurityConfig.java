@@ -3,6 +3,8 @@ package baekgwa.itemauction.global.configuration;
 import baekgwa.itemauction.domain.user.entity.UserRole;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -14,8 +16,16 @@ public class SecurityConfig {
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
-
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public RoleHierarchy roleHierarchy() {
+        return RoleHierarchyImpl.withDefaultRolePrefix()
+                .role("ADMIN").implies("TRADER")
+                .role("TRADER").implies("BUYER")
+                .role("BUYER").implies("NONE")
+                .build();
     }
 
     @Bean
@@ -24,8 +34,9 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/login", "/users/add", "/error/**", "/loginProc", "/css/*").permitAll()
-                        .requestMatchers("/admin").hasRole(UserRole.ADMIN.getText())
-                        .requestMatchers("/my/**").hasAnyRole(UserRole.ADMIN.getText(), "USER")
+                        .requestMatchers("/admin").hasAnyRole("ADMIN")
+                        .requestMatchers("/manage/**").hasAnyRole("TRADER")
+                        .requestMatchers("/items/**").hasAnyRole("BUYER")
                         .anyRequest().authenticated());
 
         http

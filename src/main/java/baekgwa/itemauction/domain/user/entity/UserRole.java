@@ -7,10 +7,10 @@ import lombok.RequiredArgsConstructor;
 @Getter
 public enum UserRole {
 
-    NONE("권한 없음"),
-    BUYER("구매 권한"),
-    TRADER("판매/구매 권한"),
-    ADMIN("관리자 권한");
+    NONE("ROLE_NONE"),
+    BUYER("ROLE_BUYER"),
+    TRADER("ROLE_TRADER"),
+    ADMIN("ROLE_ADMIN");
 
     private final String text;
 }
