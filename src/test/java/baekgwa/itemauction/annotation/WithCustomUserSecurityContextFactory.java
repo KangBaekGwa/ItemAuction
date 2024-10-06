@@ -15,6 +15,7 @@ public class WithCustomUserSecurityContextFactory implements WithSecurityContext
 
         // User 객체 생성
         User newUser = User.createNewUser(customUser.username(), customUser.password());
+        newUser.updateRole(customUser.role());
         CustomUserDetails customUserDetails = new CustomUserDetails(newUser);
 
         // Authentication 객체 생성

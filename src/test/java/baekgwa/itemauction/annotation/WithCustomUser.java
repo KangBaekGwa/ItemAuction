@@ -1,5 +1,6 @@
 package baekgwa.itemauction.annotation;
 
+import baekgwa.itemauction.domain.user.entity.UserRole;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -12,4 +13,5 @@ import org.springframework.security.test.context.support.WithSecurityContext;
 public @interface WithCustomUser {
     String username() default "test1";
     String password() default "1234";
+    UserRole role() default UserRole.NONE;
 }
