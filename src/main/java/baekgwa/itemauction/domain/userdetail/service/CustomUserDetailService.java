@@ -23,10 +23,6 @@ public class CustomUserDetailService implements UserDetailsService {
                 () -> new CustomException(CustomErrorCode.FIND_USER_ERROR_NOT_FIND)
         );
 
-        if (userData != null) {
-            return new CustomUserDetails(userData);
-        }
-
-        return null;
+        return new CustomUserDetails(userData);
     }
 }

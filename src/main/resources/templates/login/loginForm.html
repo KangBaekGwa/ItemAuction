@@ -22,7 +22,7 @@
     <h2>로그인</h2>
   </div>
 
-  <form action="/loginProc" th:action="@{/loginProc}" th:object="${loginForm}" method="post">
+  <form th:action="@{/loginProc}" th:object="${loginForm}" method="post">
     <div>
       <label for="username">로그인 ID</label>
       <input type="text" id="username" th:field="*{username}" class="form-control">
