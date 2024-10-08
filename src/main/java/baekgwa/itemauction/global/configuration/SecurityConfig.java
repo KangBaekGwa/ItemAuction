@@ -52,7 +52,7 @@ public class SecurityConfig {
         http
                 .sessionManagement(auth -> auth
                         .maximumSessions(1) //로그인 최대 허용치
-                        .maxSessionsPreventsLogin(true)); //로그인 허용치 초과시 새로운 로그인 차단
+                        .maxSessionsPreventsLogin(false)); //로그인 허용치 초과시 새로운 로그인 차단
 
         http
                 .sessionManagement(auth -> auth
