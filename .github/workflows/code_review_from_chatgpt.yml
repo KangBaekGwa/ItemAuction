@@ -1,4 +1,4 @@
-name: Code Review From ChatGPT
+name: ChatGPT Code Review. (Only 'dev' Branch)
 
 permissions:
   contents: read
@@ -11,6 +11,7 @@ on:
 jobs:
   code-review:
     runs-on: ubuntu-latest
+    if: github.base_ref == 'dev' && contains(github.event.pull_request.labels.*.name, 'needs-review')
     steps:
       - uses: anc95/ChatGPT-CodeReview@main
         env:
