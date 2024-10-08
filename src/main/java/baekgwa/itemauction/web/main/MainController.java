@@ -23,14 +23,15 @@ public class MainController {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (authentication.getPrincipal() instanceof CustomUserDetails userDetails) {
+        if (authentication.getPrincipal() != null
+                && authentication.getPrincipal() instanceof CustomUserDetails userDetails) {
             UserProfileDataDto userProfileDataDto = userService.findUserData(userDetails.getId());
 
             MainForm mainForm = MainForm.builder()
                     .userProfileDataDto(userProfileDataDto)
                     .build();
 
-            model.addAttribute(mainForm);
+            model.addAttribute("mainForm", mainForm);
 
             return "loginMain";
         }
