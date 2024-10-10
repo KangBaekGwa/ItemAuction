@@ -13,6 +13,7 @@ import baekgwa.itemauction.domain.userprofile.entity.UserProfile;
 import baekgwa.itemauction.global.exception.CustomErrorCode;
 import baekgwa.itemauction.global.exception.CustomException;
 import baekgwa.itemauction.web.user.UserForm.NewUser;
+import baekgwa.itemauction.web.user.UserResponse.checkDuplicateLoginId;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -162,6 +163,41 @@ class UserServiceImplTest extends IntegrationSpringBootTest {
                 .isInstanceOf(CustomException.class)
                 .extracting("code")
                 .isEqualTo(CustomErrorCode.FIND_USER_PROFILE_ERROR_NOT_FIND);
+    }
+
+    @DisplayName("[Success] 로그인 아이디는 중복확인을 합니다.")
+    @Test
+    void checkDuplicateLoginId() {
+        // given
+        String name = "name1";
+        String nickName = "nickName1";
+        User newUser = User.createNewUser("test1", "1234");
+        User savedUserData = userRepository.save(newUser);
+        UserProfile newUserProfile = UserProfile.createNewUserProfile(savedUserData, name, nickName, "email@email.com", "01011112222");
+        userProfileRepository.save(newUserProfile);
+
+        // when
+        checkDuplicateLoginId result = userService.checkDuplicateLoginId(
+                savedUserData.getLoginId());
+
+        // then
+        assertThat(result).isNotNull()
+                .extracting("isDuplicate")
+                .isEqualTo(Boolean.TRUE);
+    }
+
+    @DisplayName("[Success] 로그인 아이디의 중복을 확인 합니다. Case2")
+    @Test
+    void checkDuplicateLoginIdCase2() {
+        // given
+
+        // when
+        checkDuplicateLoginId result = userService.checkDuplicateLoginId("loginId1");
+
+        // then
+        assertThat(result).isNotNull()
+                .extracting("isDuplicate")
+                .isEqualTo(Boolean.FALSE);
     }
 
     private NewUser createNewUser(String loginId, String password, String name, String nickName,
