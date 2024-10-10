@@ -6,7 +6,7 @@ import baekgwa.itemauction.domain.userprofile.repository.UserProfileRepository;
 import baekgwa.itemauction.domain.userprofile.service.UserProfileService;
 import baekgwa.itemauction.global.exception.CustomErrorCode;
 import baekgwa.itemauction.global.exception.CustomException;
-import baekgwa.itemauction.web.mypage.MyPageForm.changeProfile;
+import baekgwa.itemauction.web.mypage.MyPageForm.ChangeProfile;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +19,14 @@ public class UserProfileServiceImpl implements UserProfileService {
 
     @Transactional
     @Override
-    public void updateUserProfile(Long userId, changeProfile changeProfile) {
+    public void updateUserProfile(Long userId, ChangeProfile changeProfile) {
+        UserProfile findUserProfileData = userProfileRepository.findById(userId).orElseThrow(
+                () -> new CustomException(CustomErrorCode.FIND_USER_PROFILE_ERROR_NOT_FIND)
+        );
+
+        findUserProfileData.updateUserProfile(
+                changeProfile.getNickName(), changeProfile.getName(),
+                changeProfile.getEmail(), changeProfile.getPhone());
     }
 
     @Transactional
