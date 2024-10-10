@@ -16,6 +16,7 @@ public enum CustomErrorCode {
     ADD_USER_ERROR_DUPLICATED_PHONE(1003, "중복된 전화번호 입니다."),
     ADD_USER_ERROR_DUPLICATED_EMAIL(1003, "중복된 이메일 입니다."),
 
+    NOT_HANDLED_EXCEPTION(9999, "알수없는 오류로 요청이 취소되었습니다."),
     ;
 
     private final int code;

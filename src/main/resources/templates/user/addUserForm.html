@@ -27,6 +27,9 @@
     <h4 class="mb-3">회원 정보 입력</h4>
 
     <form th:action th:object="${newMemberForm}" method="post">
+        <div th:if="${globalError}">
+            <p class="field-error" th:text="${globalError}">전체 오류 메시지</p>
+        </div>
         <div class="row mb-3">
             <div class="col-8">
                 <label for="loginId">로그인 ID</label>
