@@ -40,28 +40,11 @@ public class UserServiceImpl implements UserService {
         userProfileRepository.save(createdNewUserProfile);
     }
 
-    @Transactional
-    @Override
-    public UserProfileDataDto findUserData(Long userId) {
-        UserProfile findUserProfile = userProfileRepository.findById(userId).orElseThrow(
-                () -> new CustomException(CustomErrorCode.FIND_USER_PROFILE_ERROR_NOT_FIND)
-        );
-        return convertToDto(findUserProfile);
-    }
-
     @Transactional(readOnly = true)
     @Override
     public UserResponse.checkDuplicateLoginId checkDuplicateLoginId(String loginId) {
         return UserResponse.checkDuplicateLoginId.builder()
                 .duplicate(userRepository.existsByLoginId(loginId))
-                .build();
-    }
-
-    private UserProfileDataDto convertToDto(UserProfile userProfile) {
-        return UserProfileDataDto
-                .builder()
-                .nickName(userProfile.getNickName())
-                .name(userProfile.getName())
                 .build();
     }
 

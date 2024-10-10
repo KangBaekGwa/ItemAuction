@@ -8,7 +8,5 @@ public interface UserService {
 
     void addNewUser(NewUser newUser);
 
-    UserProfileDataDto findUserData(Long id);
-
     UserResponse.checkDuplicateLoginId checkDuplicateLoginId(String loginId);
 }

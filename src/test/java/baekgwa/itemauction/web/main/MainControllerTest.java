@@ -31,9 +31,9 @@ class MainControllerTest extends IntegrationControllerTest {
     void mainPageFormWithUser() throws Exception {
         UserProfileDataDto data = UserProfileDataDto.builder().name("테스트").nickName("백과").build();
 
-        BDDMockito.given(userService.findUserData(null))
+        BDDMockito.given(userProfileService.findUserDataMainForm(null))
                         .willReturn(data);
-                
+
         mockMvc.perform(MockMvcRequestBuilders.get("/"))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())

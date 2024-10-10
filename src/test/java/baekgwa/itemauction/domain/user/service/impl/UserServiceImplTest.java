@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import baekgwa.itemauction.IntegrationSpringBootTest;
-import baekgwa.itemauction.domain.user.dto.UserProfileDataDto;
 import baekgwa.itemauction.domain.user.entity.User;
 import baekgwa.itemauction.domain.user.entity.UserRole;
 import baekgwa.itemauction.domain.user.entity.UserStatus;
@@ -128,41 +127,6 @@ class UserServiceImplTest extends IntegrationSpringBootTest {
                 .isInstanceOf(CustomException.class)
                 .extracting("code")
                 .isEqualTo(CustomErrorCode.ADD_USER_ERROR_DUPLICATED_EMAIL);
-    }
-
-    @DisplayName("[Success] 회원의 Id로 회원의 프로파일 정보 일부를 가져옵니다.")
-    @Test
-    void findUserData() {
-        // given
-        String name = "name1";
-        String nickName = "nickName1";
-
-        User newUser = User.createNewUser("test1", "1234");
-        User savedUserData = userRepository.save(newUser);
-        UserProfile newUserProfile = UserProfile.createNewUserProfile(savedUserData, name, nickName, "email@email.com", "01011112222");
-        userProfileRepository.save(newUserProfile);
-
-        // when
-        UserProfileDataDto userProfileDataDto = userService.findUserData(savedUserData.getId());
-
-        // then
-        assertThat(userProfileDataDto).isNotNull()
-                .extracting("name", "nickName")
-                .contains(name, nickName);
-    }
-
-    @DisplayName("[Fail] 회원의 프로파일 정보를 불러오기 실패하면, 오류가 반환됩니다.")
-    @Test
-    void findUserDataNotFoundCase() {
-        // given
-
-        // when
-
-        // then
-        assertThatThrownBy(() -> userService.findUserData(1L))
-                .isInstanceOf(CustomException.class)
-                .extracting("code")
-                .isEqualTo(CustomErrorCode.FIND_USER_PROFILE_ERROR_NOT_FIND);
     }
 
     @DisplayName("[Success] 로그인 아이디는 중복확인을 합니다.")
