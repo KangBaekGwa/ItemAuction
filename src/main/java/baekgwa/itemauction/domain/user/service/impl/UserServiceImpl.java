@@ -8,7 +8,7 @@ import baekgwa.itemauction.domain.user.service.UserService;
 import baekgwa.itemauction.global.exception.CustomErrorCode;
 import baekgwa.itemauction.global.exception.CustomException;
 import baekgwa.itemauction.web.user.UserForm.NewUser;
-import baekgwa.itemauction.web.user.UserResponse;
+import baekgwa.itemauction.web.user.UserResponse.CheckDuplicateLoginId;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -41,8 +41,8 @@ public class UserServiceImpl implements UserService {
 
     @Transactional(readOnly = true)
     @Override
-    public UserResponse.checkDuplicateLoginId checkDuplicateLoginId(String loginId) {
-        return UserResponse.checkDuplicateLoginId
+    public CheckDuplicateLoginId checkDuplicateLoginId(String loginId) {
+        return CheckDuplicateLoginId
                 .builder()
                 .duplicate(userRepository.existsByLoginId(loginId))
                 .build();

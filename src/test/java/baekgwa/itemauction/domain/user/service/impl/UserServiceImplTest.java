@@ -12,7 +12,7 @@ import baekgwa.itemauction.domain.userprofile.entity.UserProfile;
 import baekgwa.itemauction.global.exception.CustomErrorCode;
 import baekgwa.itemauction.global.exception.CustomException;
 import baekgwa.itemauction.web.user.UserForm.NewUser;
-import baekgwa.itemauction.web.user.UserResponse.checkDuplicateLoginId;
+import baekgwa.itemauction.web.user.UserResponse.CheckDuplicateLoginId;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -147,7 +147,7 @@ class UserServiceImplTest extends IntegrationSpringBootTest {
         userProfileRepository.save(newUserProfile);
 
         // when
-        checkDuplicateLoginId result = userService.checkDuplicateLoginId(
+        CheckDuplicateLoginId result = userService.checkDuplicateLoginId(
                 savedUserData.getLoginId());
 
         // then
@@ -162,7 +162,7 @@ class UserServiceImplTest extends IntegrationSpringBootTest {
         // given
 
         // when
-        checkDuplicateLoginId result = userService.checkDuplicateLoginId("loginId1");
+        CheckDuplicateLoginId result = userService.checkDuplicateLoginId("loginId1");
 
         // then
         assertThat(result).isNotNull()

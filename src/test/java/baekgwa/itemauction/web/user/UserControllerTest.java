@@ -3,7 +3,7 @@ package baekgwa.itemauction.web.user;
 import static org.mockito.ArgumentMatchers.anyString;
 
 import baekgwa.itemauction.IntegrationControllerTest;
-import baekgwa.itemauction.web.user.UserResponse.checkDuplicateLoginId;
+import baekgwa.itemauction.web.user.UserResponse.CheckDuplicateLoginId;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.BDDMockito;
@@ -66,7 +66,7 @@ class UserControllerTest extends IntegrationControllerTest {
         // given
 
         // stubbing
-        checkDuplicateLoginId response = checkDuplicateLoginId.builder().duplicate(Boolean.FALSE).build();
+        CheckDuplicateLoginId response = CheckDuplicateLoginId.builder().duplicate(Boolean.FALSE).build();
         BDDMockito.given(userService.checkDuplicateLoginId(anyString())).willReturn(response);
 
         // when // then

@@ -1,7 +1,7 @@
 package baekgwa.itemauction.web.user;
 
 import baekgwa.itemauction.domain.user.service.UserService;
-import baekgwa.itemauction.web.user.UserResponse.checkDuplicateLoginId;
+import baekgwa.itemauction.web.user.UserResponse.CheckDuplicateLoginId;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,10 +41,10 @@ public class UserController {
     }
 
     @GetMapping("/add/check")
-    public ResponseEntity<UserResponse.checkDuplicateLoginId> checkDuplicateLoginId(
+    public ResponseEntity<CheckDuplicateLoginId> checkDuplicateLoginId(
             @RequestParam(name = "loginId") String loginId
     ) {
-        checkDuplicateLoginId result = userService.checkDuplicateLoginId(loginId);
+        CheckDuplicateLoginId result = userService.checkDuplicateLoginId(loginId);
         return ResponseEntity.ok(result);
     }
 }

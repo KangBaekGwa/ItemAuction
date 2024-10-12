@@ -6,11 +6,11 @@ import lombok.Getter;
 public class UserResponse {
 
     @Getter
-    public static class checkDuplicateLoginId {
+    public static class CheckDuplicateLoginId {
         boolean duplicate;
 
         @Builder
-        private checkDuplicateLoginId(boolean duplicate) {
+        private CheckDuplicateLoginId(boolean duplicate) {
             this.duplicate = duplicate;
         }
     }
