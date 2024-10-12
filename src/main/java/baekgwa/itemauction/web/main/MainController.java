@@ -1,12 +1,10 @@
 package baekgwa.itemauction.web.main;
 
-import baekgwa.itemauction.domain.user.dto.UserProfileDataDto;
-import baekgwa.itemauction.domain.user.service.UserService;
 import baekgwa.itemauction.domain.userdetail.dto.CustomUserDetails;
+import baekgwa.itemauction.domain.userprofile.service.UserProfileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,23 +14,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 @RequiredArgsConstructor
 public class MainController {
 
-    private final UserService userService;
+    private final UserProfileService userProfileService;
 
     @GetMapping("/")
-    public String mainPageForm(Model model) {
+    public String mainPageForm(
+            Model model,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication.getPrincipal() != null
-                && authentication.getPrincipal() instanceof CustomUserDetails userDetails) {
-            UserProfileDataDto userProfileDataDto = userService.findUserData(userDetails.getId());
-
-            MainForm mainForm = MainForm.builder()
-                    .userProfileDataDto(userProfileDataDto)
-                    .build();
-
-            model.addAttribute("mainForm", mainForm);
-
+        if (userDetails != null) {
+            MainForm.UserInfo data = userProfileService.findUserDataMainForm(userDetails.getId());
+            model.addAttribute("mainForm", data);
             return "loginMain";
         }
 

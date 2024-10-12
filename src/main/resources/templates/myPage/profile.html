@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link th:href="@{/css/bootstrap.min.css}"
+          href="../css/bootstrap.min.css" rel="stylesheet">
+    <title>회원정보</title>
+    <style>
+      .container {
+        max-width: 560px;
+      }
+
+      .field-error {
+        border-color: #dc3545;
+        color: #dc3545;
+      }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="py-5 text-center">
+        <h2>회원 정보</h2>
+    </div>
+    <hr class="my-4">
+    <form th:action th:object="${profileForm}" method="post">
+        <div th:if="${globalError}">
+            <p class="field-error" th:text="${globalError}">전체 오류 메시지</p>
+        </div>
+
+        <div>
+            <label for="nickName" class="form-check-inline">닉네임</label>
+            <input type="text" id="nickName" value="닉네임" th:field="*{nickName}"
+                   class="form-check-label" th:errorclass="field-error">
+            <div class="field-error" th:errors="*{nickName}"></div>
+        </div>
+        <div>
+            <label for="name" class="form-check-inline">이름</label>
+            <input type="text" id="name" value="이름" th:field="*{name}"
+                   class="form-check-label" th:errorclass="field-error">
+            <div class="field-error" th:errors="*{name}"></div>
+        </div>
+        <div>
+            <label for="email" class="form-check-inline">이메일</label>
+            <input type="email" id="email" value="test@test.com" th:field="*{email}"
+                   class="form-check-label" th:errorclass="field-error">
+            <div class="field-error" th:errors="*{email}"></div>
+        </div>
+        <div>
+            <label for="phone" class="form-check-inline">전화번호</label>
+            <input type="text" id="phone" value="01012341234" th:field="*{phone}"
+                   class="form-check-label" th:errorclass="field-error">
+            <div class="field-error" th:errors="*{phone}"></div>
+        </div>
+        <div>
+<!--            <label for="grade" class="form-check-inline">회원등급</label>-->
+<!--            <input type="text" id="grade" value="브론즈" th:value="*{userGrade.text}"-->
+<!--                   class="form-check-label" disabled>-->
+            <label for="grade" class="form-check-inline">회원등급</label>
+            <span id="grade" class="form-check-label" th:text="${profileForm.userGrade}"></span>
+        </div>
+        <hr class="my-4">
+        <div class="row">
+            <div class="col">
+                <button class="w-100 btn btn-primary btn-lg" type="submit"> 저장 하기 </button>
+            </div>
+            <div class="col">
+                <button class="w-100 btn btn-secondary btn-lg"
+                        th:onclick="|location.href='@{/mypage}'|" type="button">
+                    취소
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+</body>
+</html>

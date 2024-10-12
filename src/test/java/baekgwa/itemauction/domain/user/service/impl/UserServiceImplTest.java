@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import baekgwa.itemauction.IntegrationSpringBootTest;
-import baekgwa.itemauction.domain.user.dto.UserProfileDataDto;
 import baekgwa.itemauction.domain.user.entity.User;
 import baekgwa.itemauction.domain.user.entity.UserRole;
 import baekgwa.itemauction.domain.user.entity.UserStatus;
@@ -13,6 +12,7 @@ import baekgwa.itemauction.domain.userprofile.entity.UserProfile;
 import baekgwa.itemauction.global.exception.CustomErrorCode;
 import baekgwa.itemauction.global.exception.CustomException;
 import baekgwa.itemauction.web.user.UserForm.NewUser;
+import baekgwa.itemauction.web.user.UserResponse.CheckDuplicateLoginId;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -82,7 +82,9 @@ class UserServiceImplTest extends IntegrationSpringBootTest {
 
         User alreadyUserData = User.createNewUser("test2", "1234");
         User savedData = userRepository.save(alreadyUserData);
-        userProfileRepository.save(UserProfile.createNewUserProfile(savedData, "중복방지", nickName, "중복방지@email.com", "01023232323"));
+        UserProfile savedProfileData = userProfileRepository.save(
+                UserProfile.createNewUserProfile(
+                        savedData, "중복방지", nickName, "중복방지@email.com", "01023232323"));
 
         // when // then
         assertThatThrownBy(() -> userService.addNewUser(newUser))
@@ -101,7 +103,9 @@ class UserServiceImplTest extends IntegrationSpringBootTest {
 
         User alreadyUserData = User.createNewUser("test2", "1234");
         User savedData = userRepository.save(alreadyUserData);
-        userProfileRepository.save(UserProfile.createNewUserProfile(savedData, "중복방지", "닉네임1", "중복방지@email.com", phone));
+        userProfileRepository.save(
+                UserProfile.createNewUserProfile(savedData, "중복방지", "닉네임1", "중복방지@email.com",
+                        phone));
 
         // when // then
         assertThatThrownBy(() -> userService.addNewUser(newUser))
@@ -120,7 +124,8 @@ class UserServiceImplTest extends IntegrationSpringBootTest {
 
         User alreadyUserData = User.createNewUser("test2", "1234");
         User savedData = userRepository.save(alreadyUserData);
-        userProfileRepository.save(UserProfile.createNewUserProfile(savedData, "중복방지", "닉네임1", email, "01029871276"));
+        userProfileRepository.save(
+                UserProfile.createNewUserProfile(savedData, "중복방지", "닉네임1", email, "01029871276"));
 
         // when // then
         assertThatThrownBy(() -> userService.addNewUser(newUser))
@@ -129,39 +134,40 @@ class UserServiceImplTest extends IntegrationSpringBootTest {
                 .isEqualTo(CustomErrorCode.ADD_USER_ERROR_DUPLICATED_EMAIL);
     }
 
-    @DisplayName("[Success] 회원의 Id로 회원의 프로파일 정보 일부를 가져옵니다.")
+    @DisplayName("[Success] 로그인 아이디는 중복확인을 합니다.")
     @Test
-    void findUserData() {
+    void checkDuplicateLoginId() {
         // given
         String name = "name1";
         String nickName = "nickName1";
-
         User newUser = User.createNewUser("test1", "1234");
         User savedUserData = userRepository.save(newUser);
-        UserProfile newUserProfile = UserProfile.createNewUserProfile(savedUserData, name, nickName, "email@email.com", "01011112222");
+        UserProfile newUserProfile = UserProfile.createNewUserProfile(savedUserData, name, nickName,
+                "email@email.com", "01011112222");
         userProfileRepository.save(newUserProfile);
 
         // when
-        UserProfileDataDto userProfileDataDto = userService.findUserData(savedUserData.getId());
+        CheckDuplicateLoginId result = userService.checkDuplicateLoginId(
+                savedUserData.getLoginId());
 
         // then
-        assertThat(userProfileDataDto).isNotNull()
-                .extracting("name", "nickName")
-                .contains(name, nickName);
+        assertThat(result).isNotNull()
+                .extracting("duplicate")
+                .isEqualTo(Boolean.TRUE);
     }
 
-    @DisplayName("[Fail] 회원의 프로파일 정보를 불러오기 실패하면, 오류가 반환됩니다.")
+    @DisplayName("[Success] 로그인 아이디의 중복을 확인 합니다. Case2")
     @Test
-    void findUserDataNotFoundCase() {
+    void checkDuplicateLoginIdCase2() {
         // given
 
         // when
+        CheckDuplicateLoginId result = userService.checkDuplicateLoginId("loginId1");
 
         // then
-        assertThatThrownBy(() -> userService.findUserData(1L))
-                .isInstanceOf(CustomException.class)
-                .extracting("code")
-                .isEqualTo(CustomErrorCode.FIND_USER_PROFILE_ERROR_NOT_FIND);
+        assertThat(result).isNotNull()
+                .extracting("duplicate")
+                .isEqualTo(Boolean.FALSE);
     }
 
     private NewUser createNewUser(String loginId, String password, String name, String nickName,

@@ -1,10 +1,8 @@
 package baekgwa.itemauction.web.main;
 
-import static org.mockito.ArgumentMatchers.anyLong;
-
 import baekgwa.itemauction.IntegrationControllerTest;
 import baekgwa.itemauction.annotation.WithCustomUser;
-import baekgwa.itemauction.domain.user.dto.UserProfileDataDto;
+import baekgwa.itemauction.web.main.MainForm.UserInfo;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.BDDMockito;
@@ -29,11 +27,10 @@ class MainControllerTest extends IntegrationControllerTest {
     @DisplayName("[Success] 인증된 회원이 접근하면 로그인된 메인페이지로 이동됩니다.")
     @Test
     void mainPageFormWithUser() throws Exception {
-        UserProfileDataDto data = UserProfileDataDto.builder().name("테스트").nickName("백과").build();
-
-        BDDMockito.given(userService.findUserData(null))
+        UserInfo data = UserInfo.builder().name("테스트").nickName("백과").build();
+        BDDMockito.given(userProfileService.findUserDataMainForm(null))
                         .willReturn(data);
-                
+
         mockMvc.perform(MockMvcRequestBuilders.get("/"))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())

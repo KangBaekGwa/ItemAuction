@@ -1,6 +1,5 @@
 package baekgwa.itemauction.domain.user.service.impl;
 
-import baekgwa.itemauction.domain.user.dto.UserProfileDataDto;
 import baekgwa.itemauction.domain.userprofile.entity.UserProfile;
 import baekgwa.itemauction.domain.userprofile.repository.UserProfileRepository;
 import baekgwa.itemauction.domain.user.entity.User;
@@ -9,6 +8,7 @@ import baekgwa.itemauction.domain.user.service.UserService;
 import baekgwa.itemauction.global.exception.CustomErrorCode;
 import baekgwa.itemauction.global.exception.CustomException;
 import baekgwa.itemauction.web.user.UserForm.NewUser;
+import baekgwa.itemauction.web.user.UserResponse.CheckDuplicateLoginId;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -30,27 +30,21 @@ public class UserServiceImpl implements UserService {
 
         addNewUserDuplicateCheck(newUser);
 
-        User createdNewUser = User.createNewUser(newUser.getLoginId(), encodePassword(newUser.getPassword()));
+        User createdNewUser = User.createNewUser(newUser.getLoginId(),
+                encodePassword(newUser.getPassword()));
         User savedUserData = userRepository.save(createdNewUser);
 
-        UserProfile createdNewUserProfile = UserProfile.createNewUserProfile(savedUserData, newUser.getName(), newUser.getNickName(), newUser.getEmail(), newUser.getPhone());
+        UserProfile createdNewUserProfile = UserProfile.createNewUserProfile(savedUserData,
+                newUser.getName(), newUser.getNickName(), newUser.getEmail(), newUser.getPhone());
         userProfileRepository.save(createdNewUserProfile);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
-    public UserProfileDataDto findUserData(Long userId) {
-        UserProfile findUserProfile = userProfileRepository.findById(userId).orElseThrow(
-                () -> new CustomException(CustomErrorCode.FIND_USER_PROFILE_ERROR_NOT_FIND)
-        );
-        return convertToDto(findUserProfile);
-    }
-
-    private UserProfileDataDto convertToDto(UserProfile userProfile) {
-        return UserProfileDataDto
+    public CheckDuplicateLoginId checkDuplicateLoginId(String loginId) {
+        return CheckDuplicateLoginId
                 .builder()
-                .nickName(userProfile.getNickName())
-                .name(userProfile.getName())
+                .duplicate(userRepository.existsByLoginId(loginId))
                 .build();
     }
 
@@ -59,11 +53,11 @@ public class UserServiceImpl implements UserService {
     }
 
     private void addNewUserDuplicateCheck(NewUser newUser) {
-        if(Boolean.TRUE.equals(userRepository.existsByLoginId(newUser.getLoginId()))){
+        if (Boolean.TRUE.equals(userRepository.existsByLoginId(newUser.getLoginId()))) {
             throw new CustomException(CustomErrorCode.ADD_USER_ERROR_DUPLICATED_LOGIN_ID);
         }
 
-        userProfileRepository.findAllByUniqueValues(newUser.getNickName(), newUser.getEmail(), newUser.getPhone()).ifPresent(
+        userProfileRepository.findFirstByEmailOrNickNameOrPhone(newUser.getEmail(), newUser.getNickName(), newUser.getPhone()).ifPresent(
                 findData -> {
                     if (findData.getEmail().equals(newUser.getEmail())) {
                         throw new CustomException(CustomErrorCode.ADD_USER_ERROR_DUPLICATED_EMAIL);
@@ -74,7 +68,8 @@ public class UserServiceImpl implements UserService {
                     }
 
                     if (findData.getNickName().equals(newUser.getNickName())) {
-                        throw new CustomException(CustomErrorCode.ADD_USER_ERROR_DUPLICATED_NICKNAME);
+                        throw new CustomException(
+                                CustomErrorCode.ADD_USER_ERROR_DUPLICATED_NICKNAME);
                     }
                 }
         );

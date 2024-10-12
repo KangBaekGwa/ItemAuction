@@ -1,6 +1,5 @@
 package baekgwa.itemauction.global.configuration;
 
-import baekgwa.itemauction.domain.user.entity.UserRole;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
@@ -33,10 +32,12 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/login", "/users/add", "/error/**", "/loginProc", "/css/*").permitAll()
+                        .requestMatchers("/", "/login", "/users/add/**", "/error/**", "/loginProc", "/css/**", "/favicon.ico/**").permitAll()
+                        .requestMatchers("/js/**").permitAll()
                         .requestMatchers("/admin").hasAnyRole("ADMIN")
                         .requestMatchers("/manage/**").hasAnyRole("TRADER")
                         .requestMatchers("/items/**").hasAnyRole("BUYER")
+                        .requestMatchers("/mypage/**").hasAnyRole("NONE")
                         .anyRequest().authenticated());
 
         http
@@ -52,7 +53,7 @@ public class SecurityConfig {
         http
                 .sessionManagement(auth -> auth
                         .maximumSessions(1) //로그인 최대 허용치
-                        .maxSessionsPreventsLogin(true)); //로그인 허용치 초과시 새로운 로그인 차단
+                        .maxSessionsPreventsLogin(false)); //로그인 허용치 초과시 새로운 로그인 차단
 
         http
                 .sessionManagement(auth -> auth

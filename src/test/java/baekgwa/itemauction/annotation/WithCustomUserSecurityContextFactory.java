@@ -20,7 +20,8 @@ public class WithCustomUserSecurityContextFactory implements WithSecurityContext
 
         // Authentication 객체 생성
         Authentication authentication = new UsernamePasswordAuthenticationToken(customUserDetails,
-                null);
+                null,
+                customUserDetails.getAuthorities());
 
         context.setAuthentication(authentication);
         return context;

@@ -15,11 +15,4 @@ public class LoginController {
     public String loginForm(@ModelAttribute("loginForm") LoginForm form) {
         return "login/loginForm";
     }
-
-//    @GetMapping("/login/aram")
-//    public String loginAram(Authentication authentication, RedirectAttributes redirectAttributes) {
-//        log.info("알람전송");
-//
-//        return "redirect:/";
-//    }
 }

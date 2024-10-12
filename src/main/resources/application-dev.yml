@@ -20,6 +20,8 @@ spring:
       port: 64588
       password: 'redisdb@1234'
       Ttl: 3
+  thymeleaf:
+    cache: false
 
 server:
   port: 9000

@@ -1,10 +1,11 @@
 package baekgwa.itemauction;
 
 import baekgwa.itemauction.domain.user.service.UserService;
+import baekgwa.itemauction.domain.userprofile.service.UserProfileService;
 import baekgwa.itemauction.global.configuration.SecurityConfig;
 import baekgwa.itemauction.web.login.LoginController;
-import baekgwa.itemauction.web.logout.LogoutController;
 import baekgwa.itemauction.web.main.MainController;
+import baekgwa.itemauction.web.mypage.MyPageController;
 import baekgwa.itemauction.web.user.UserController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 //        LogoutController.class,
         MainController.class,
         UserController.class,
+        MyPageController.class,
 })
 @Import(SecurityConfig.class)
 @ActiveProfiles("test")
@@ -32,4 +34,7 @@ public abstract class IntegrationControllerTest {
 
     @MockBean
     protected UserService userService;
+
+    @MockBean
+    protected UserProfileService userProfileService;
 }

@@ -70,4 +70,11 @@ public class UserProfile extends BaseEntity {
     public void updateGrade(UserGrade grade) {
         this.grade = grade;
     }
+
+    public void updateUserProfile(String nickName, String name, String email, String phone) {
+        this.nickName = nickName;
+        this.name = name;
+        this.email = email;
+        this.phone = phone;
+    }
 }
