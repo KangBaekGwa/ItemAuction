@@ -17,6 +17,9 @@ public enum CustomErrorCode {
 
     //User Profile Error
     FIND_USER_PROFILE_ERROR_NOT_FIND(2000, "로그인한 회원의 회원 프로필 정보가 없습니다."),
+    UPDATE_USER_PROFILE_ERROR_DUPLICATED_NICKNAME(2001, "중복된 닉네임 입니다."),
+    UPDATE_USER_PROFILE_ERROR_DUPLICATED_PHONE(2022, "중복된 전화번호 입니다."),
+    UPDATE_USER_PROFILE_ERROR_DUPLICATED_EMAIL(2003, "중복된 이메일 입니다."),
 
     NOT_HANDLED_EXCEPTION(9999, "알수없는 오류로 요청이 취소되었습니다."),
     ;

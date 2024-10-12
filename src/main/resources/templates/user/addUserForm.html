@@ -2,8 +2,10 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link th:href="@{/css/bootstrap.min.css}"
           href="../css/bootstrap.min.css" rel="stylesheet">
+    <title>회원가입</title>
     <style>
       .container {
         max-width: 560px;
@@ -38,7 +40,8 @@
                 <div class="field-error" th:errors="*{loginId}"></div>
             </div>
             <div class="col-4 align-self-end">
-                <button class="btn btn-secondary w-100" type="button" onclick="checkDuplicate()">중복 확인
+                <button class="btn btn-secondary w-100" type="button" onclick="checkDuplicate()">중복
+                    확인
                 </button>
             </div>
         </div>

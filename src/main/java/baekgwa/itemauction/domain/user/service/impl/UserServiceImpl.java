@@ -1,6 +1,5 @@
 package baekgwa.itemauction.domain.user.service.impl;
 
-import baekgwa.itemauction.domain.user.dto.UserProfileDataDto;
 import baekgwa.itemauction.domain.userprofile.entity.UserProfile;
 import baekgwa.itemauction.domain.userprofile.repository.UserProfileRepository;
 import baekgwa.itemauction.domain.user.entity.User;
@@ -43,7 +42,8 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     @Override
     public UserResponse.checkDuplicateLoginId checkDuplicateLoginId(String loginId) {
-        return UserResponse.checkDuplicateLoginId.builder()
+        return UserResponse.checkDuplicateLoginId
+                .builder()
                 .duplicate(userRepository.existsByLoginId(loginId))
                 .build();
     }
@@ -57,8 +57,7 @@ public class UserServiceImpl implements UserService {
             throw new CustomException(CustomErrorCode.ADD_USER_ERROR_DUPLICATED_LOGIN_ID);
         }
 
-        userProfileRepository.findAllByUniqueValues(newUser.getNickName(), newUser.getEmail(),
-                newUser.getPhone()).ifPresent(
+        userProfileRepository.findFirstByEmailOrNickNameOrPhone(newUser.getEmail(), newUser.getNickName(), newUser.getPhone()).ifPresent(
                 findData -> {
                     if (findData.getEmail().equals(newUser.getEmail())) {
                         throw new CustomException(CustomErrorCode.ADD_USER_ERROR_DUPLICATED_EMAIL);

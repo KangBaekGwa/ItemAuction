@@ -1,6 +1,5 @@
 package baekgwa.itemauction.global.configuration;
 
-import baekgwa.itemauction.domain.user.entity.UserRole;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
@@ -38,6 +37,7 @@ public class SecurityConfig {
                         .requestMatchers("/admin").hasAnyRole("ADMIN")
                         .requestMatchers("/manage/**").hasAnyRole("TRADER")
                         .requestMatchers("/items/**").hasAnyRole("BUYER")
+                        .requestMatchers("/mypage/**").hasAnyRole("NONE")
                         .anyRequest().authenticated());
 
         http

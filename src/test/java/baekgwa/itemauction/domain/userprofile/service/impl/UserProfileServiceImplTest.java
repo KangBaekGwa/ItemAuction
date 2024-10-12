@@ -4,14 +4,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import baekgwa.itemauction.IntegrationSpringBootTest;
-import baekgwa.itemauction.domain.user.dto.UserProfileDataDto;
 import baekgwa.itemauction.domain.user.entity.User;
 import baekgwa.itemauction.domain.userprofile.entity.UserGrade;
 import baekgwa.itemauction.domain.userprofile.entity.UserProfile;
 import baekgwa.itemauction.global.exception.CustomErrorCode;
 import baekgwa.itemauction.global.exception.CustomException;
+import baekgwa.itemauction.web.main.MainForm;
 import baekgwa.itemauction.web.mypage.MyPageForm;
-import java.time.LocalDateTime;
+import baekgwa.itemauction.web.mypage.MyPageForm.ProfileInfo;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,10 +30,10 @@ class UserProfileServiceImplTest extends IntegrationSpringBootTest {
                         "01012341234"));
 
         // when
-        UserProfileDataDto dto = userProfileService.findUserDataMainForm(savedData.getId());
+        MainForm.UserInfo findData = userProfileService.findUserDataMainForm(savedData.getId());
 
         // then
-        assertThat(dto).isNotNull()
+        assertThat(findData)
                 .extracting("name", "nickName")
                 .contains("test", "닉네임");
     }
@@ -58,13 +58,15 @@ class UserProfileServiceImplTest extends IntegrationSpringBootTest {
         UserProfile savedProfileData = userProfileRepository.save(
                 UserProfile.createNewUserProfile(savedData, "test", "닉네임", "email@email.com",
                         "01012341234"));
-        LocalDateTime oldModifiedAt = savedProfileData.getModifiedAt();
 
-        MyPageForm.ChangeProfile changeProfile = new MyPageForm.ChangeProfile();
-        changeProfile.setEmail("changeEmail@email.com");
-        changeProfile.setName("changeName");
-        changeProfile.setPhone("01099999999");
-        changeProfile.setNickName("changeNickName");
+        MyPageForm.ChangeProfile changeProfile =
+                MyPageForm.ChangeProfile
+                        .builder()
+                        .nickName("changeNickName")
+                        .email("changeEmail@email.com")
+                        .name("changeName")
+                        .phone("01099999999")
+                        .build();
 
         // when
         userProfileService.updateUserProfile(savedData.getId(), changeProfile);
@@ -74,22 +76,58 @@ class UserProfileServiceImplTest extends IntegrationSpringBootTest {
         assertThat(findData.isPresent()).isTrue();
         assertThat(findData.get())
                 .extracting("userId", "name", "nickName", "email", "phone", "grade")
-                .contains(savedData.getId(), "changeName", "changeNickName", "changeEmail@email.com", "01099999999",
-                        UserGrade.BRONZE);
+                .contains(savedData.getId(), "changeName", "changeNickName",
+                        "changeEmail@email.com", "01099999999", UserGrade.BRONZE);
     }
 
     @DisplayName("[Fail] 회원의 Profile 정보를 변경하는데, 찾을 수 없다면 오류메세지가 발행됩니다.")
     @Test
     void updateUserProfileNotFoundCase() {
         // given
-        MyPageForm.ChangeProfile changeProfile = new MyPageForm.ChangeProfile();
-        changeProfile.setEmail("changeEmail@email.com");
-        changeProfile.setName("changeName");
-        changeProfile.setPhone("01099999999");
-        changeProfile.setNickName("changeNickName");
+        MyPageForm.ChangeProfile changeProfile =
+                MyPageForm.ChangeProfile
+                        .builder()
+                        .nickName("changeNickName")
+                        .email("changeEmail@email.com")
+                        .name("changeName")
+                        .phone("01099999999")
+                        .build();
 
         // when // then
         assertThatThrownBy(() -> userProfileService.updateUserProfile(1L, changeProfile))
+                .isInstanceOf(CustomException.class)
+                .extracting("code")
+                .isEqualTo(CustomErrorCode.FIND_USER_PROFILE_ERROR_NOT_FIND);
+    }
+
+    @DisplayName("[Success] 로그인된 회원 아이디로, 메인페이지에서 볼 데이터를 찾아옵니다.")
+    @Test
+    void findUserDataMyPageForm() {
+        // given
+        User savedData = userRepository.save(User.createNewUser("test1", "1234"));
+        UserProfile savedProfileData = userProfileRepository.save(
+                UserProfile.createNewUserProfile(savedData, "test", "닉네임", "email@email.com",
+                        "01012341234"));
+
+        // when
+        ProfileInfo userDataMyPageForm = userProfileService.findUserDataMyPageForm(
+                savedData.getId());
+
+        // then
+        assertThat(userDataMyPageForm)
+                .extracting("nickName", "name", "email", "phone", "userGrade")
+                .contains("닉네임", "test", "email@email.com", "01012341234", UserGrade.BRONZE.getText());
+    }
+
+    @DisplayName("[Fail] 메인페이지에서 볼 데이터를 찾아오는데, 회원 id가 매칭되는게 없으면 오류메세지가 발행됩니다.")
+    @Test
+    void findUserDataMyPageFormFail() {
+        // given
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> userProfileService.findUserDataMyPageForm(1L))
                 .isInstanceOf(CustomException.class)
                 .extracting("code")
                 .isEqualTo(CustomErrorCode.FIND_USER_PROFILE_ERROR_NOT_FIND);

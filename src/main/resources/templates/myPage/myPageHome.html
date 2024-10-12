@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link th:href="@{/css/bootstrap.min.css}"
+          href="../css/bootstrap.min.css" rel="stylesheet">
+    <title>마이페이지</title>
+    <style>
+      .container {
+        max-width: 560px;
+      }
+
+      .field-error {
+        border-color: #dc3545;
+        color: #dc3545;
+      }
+    </style>
+</head>
+<body>
+<div class="container" style="max-width: 600px">
+    <div class="py-5 text-center">
+        <h2>마이페이지</h2>
+    </div>
+
+    <div class="flex-column-reverse">
+        <div class="col">
+            <button class="w-100 btn btn-dark btn-lg" type="button"
+                    th:onclick="|location.href='@{/}'|">
+                홈
+            </button>
+        </div>
+        <br>
+        <div class="col">
+            <button class="w-100 btn btn-dark btn-lg"
+                    th:onclick="|location.href='@{/mypage/profiles}'|" type="button">
+                회원 정보 수정
+            </button>
+        </div>
+    </div>
+
+    <hr class="my-4">
+
+</div> <!-- /container -->
+</body>

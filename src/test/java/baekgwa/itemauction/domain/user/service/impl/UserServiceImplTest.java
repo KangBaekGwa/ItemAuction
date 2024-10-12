@@ -82,7 +82,9 @@ class UserServiceImplTest extends IntegrationSpringBootTest {
 
         User alreadyUserData = User.createNewUser("test2", "1234");
         User savedData = userRepository.save(alreadyUserData);
-        userProfileRepository.save(UserProfile.createNewUserProfile(savedData, "중복방지", nickName, "중복방지@email.com", "01023232323"));
+        UserProfile savedProfileData = userProfileRepository.save(
+                UserProfile.createNewUserProfile(
+                        savedData, "중복방지", nickName, "중복방지@email.com", "01023232323"));
 
         // when // then
         assertThatThrownBy(() -> userService.addNewUser(newUser))
@@ -101,7 +103,9 @@ class UserServiceImplTest extends IntegrationSpringBootTest {
 
         User alreadyUserData = User.createNewUser("test2", "1234");
         User savedData = userRepository.save(alreadyUserData);
-        userProfileRepository.save(UserProfile.createNewUserProfile(savedData, "중복방지", "닉네임1", "중복방지@email.com", phone));
+        userProfileRepository.save(
+                UserProfile.createNewUserProfile(savedData, "중복방지", "닉네임1", "중복방지@email.com",
+                        phone));
 
         // when // then
         assertThatThrownBy(() -> userService.addNewUser(newUser))
@@ -120,7 +124,8 @@ class UserServiceImplTest extends IntegrationSpringBootTest {
 
         User alreadyUserData = User.createNewUser("test2", "1234");
         User savedData = userRepository.save(alreadyUserData);
-        userProfileRepository.save(UserProfile.createNewUserProfile(savedData, "중복방지", "닉네임1", email, "01029871276"));
+        userProfileRepository.save(
+                UserProfile.createNewUserProfile(savedData, "중복방지", "닉네임1", email, "01029871276"));
 
         // when // then
         assertThatThrownBy(() -> userService.addNewUser(newUser))
@@ -137,7 +142,8 @@ class UserServiceImplTest extends IntegrationSpringBootTest {
         String nickName = "nickName1";
         User newUser = User.createNewUser("test1", "1234");
         User savedUserData = userRepository.save(newUser);
-        UserProfile newUserProfile = UserProfile.createNewUserProfile(savedUserData, name, nickName, "email@email.com", "01011112222");
+        UserProfile newUserProfile = UserProfile.createNewUserProfile(savedUserData, name, nickName,
+                "email@email.com", "01011112222");
         userProfileRepository.save(newUserProfile);
 
         // when
@@ -146,7 +152,7 @@ class UserServiceImplTest extends IntegrationSpringBootTest {
 
         // then
         assertThat(result).isNotNull()
-                .extracting("isDuplicate")
+                .extracting("duplicate")
                 .isEqualTo(Boolean.TRUE);
     }
 
@@ -160,7 +166,7 @@ class UserServiceImplTest extends IntegrationSpringBootTest {
 
         // then
         assertThat(result).isNotNull()
-                .extracting("isDuplicate")
+                .extracting("duplicate")
                 .isEqualTo(Boolean.FALSE);
     }
 
